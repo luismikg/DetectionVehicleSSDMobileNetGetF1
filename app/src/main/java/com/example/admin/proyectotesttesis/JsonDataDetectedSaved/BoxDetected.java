@@ -39,16 +39,20 @@ public class BoxDetected {
     }
 
     public void  addRegionFromBox(Box box){
-        this.addRegion( box.getxMin(), box.getyMin(), box.getxMax(), box.getyMax(), box.getxMax() - box.getxMin(),  box.getyMax()-box.getyMin());
+        this.addRegion( box.getxMin(), box.getyMin(), box.getxMax(), box.getyMax() );
     }
 
-    public void  addRegion( float x1, float y1, float x2, float y2, float width, float height ){
-        Region region = new Region( x1, y1, x2, y2, width,  height);
+    public void  addRegion( float x1, float y1, float x2, float y2 ){
+        Region region = new Region( x1, y1, x2, y2, x2-x1,  y2-y1);
         this.addRegion( region );
     }
 
     public void  addRegion( Region region ){
         if( this.regions == null ){ this.regions = new LinkedList<Region>(); }
         this.regions.add( region );
+    }
+
+    public boolean hasRegions(){
+        return (this.regions != null);
     }
 }

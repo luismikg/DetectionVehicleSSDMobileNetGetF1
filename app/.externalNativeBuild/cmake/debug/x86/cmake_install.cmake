@@ -1,4 +1,4 @@
-# Install script for directory: /home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app
+# Install script for directory: /home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/x86/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/x86/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -2,11 +2,11 @@
 {
 	"buildFiles" : 
 	[
-		"/home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/CMakeLists.txt"
+		"/home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app/CMakeLists.txt"
 	],
 	"cleanCommands" : 
 	[
-		"/home/usuario/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a --target clean"
+		"/home/usuario/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/usuario/Documentos/Android/Android\\ Detection\\ Vehicle\\ Metrics/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -15,18 +15,18 @@
 		{
 			"abi" : "arm64-v8a",
 			"artifactName" : "native-lib",
-			"buildCommand" : "/home/usuario/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a --target native-lib",
+			"buildCommand" : "/home/usuario/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/usuario/Documentos/Android/Android\\ Detection\\ Vehicle\\ Metrics/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a --target native-lib",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
 					"flags" : "  --target=aarch64-none-linux-android21 --gcc-toolchain=/home/usuario/Android/Sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64 --sysroot=/home/usuario/Android/Sdk/ndk-bundle/sysroot  -Dnative_lib_EXPORTS -isystem /home/usuario/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /home/usuario/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /home/usuario/Android/Sdk/ndk-bundle/sysroot/usr/include/aarch64-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "/home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/src/main/cpp/native-lib.cpp",
-					"workingDirectory" : "/home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a"
+					"src" : "/home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app/.externalNativeBuild/cmake/debug/arm64-v8a"
 				}
 			],
-			"output" : "/home/usuario/Documentos/Android/DetectionVehicleSSDMobileNetGetF1/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so",
+			"output" : "/home/usuario/Documentos/Android/Android Detection Vehicle Metrics/DetectionVehicleSSDMobileNetGetF1/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so",
 			"toolchain" : "482475509567830347"
 		}
 	},

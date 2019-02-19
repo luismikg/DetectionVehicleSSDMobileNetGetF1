@@ -1,10 +1,17 @@
 package com.example.admin.proyectotesttesis;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TimeUtils;
@@ -12,7 +19,14 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.admin.proyectotesttesis.JsonDataDetectedSaved.BoxDetected;
+import com.example.admin.proyectotesttesis.JsonDataDetectedSaved.JsonDetection;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,10 +36,17 @@ public class MainActivity extends Activity {
 
     private MyCanvas myCamvas;
     private Bitmap imageOriginal;
-    private Bitmap image;
+    private Bitmap imageToDraw;
 
     public static long START = (long)0.0;
     public static long FINISH = (long) 0.0;
+
+    private int MY_REQUEST_PERMISSION_CODE = 205300;
+    private String PATH_IMGS = "/ImgTesis/GetFramesV3/Frames/Dia/";
+    private String NAME_JSON_BOUNDIG_BOXES = "jsonDetectedFromMobileConf_0.30.json";
+    public static double CONFIDENCE = 0.30;
+    List<BoxDetected> boxDetectedList = null;
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -45,11 +66,52 @@ public class MainActivity extends Activity {
         this.myCamvas.setBackgroundColor(Color.WHITE);
         this.setContentView(myCamvas);
 
-        //Load first image
-        this.loadImage( 0 );
+        this.checkPermissions();
+    }
 
-        //Detection
-        this.startDetection();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if( requestCode == this.MY_REQUEST_PERMISSION_CODE ){
+            if( grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED ){
+                this.allPermissionOk();
+            }
+        }
+    }
+
+    private void checkPermissions(){
+
+        if ( (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) ){
+            if ( (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) ){
+                this.allPermissionOk();
+            }
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    this.MY_REQUEST_PERMISSION_CODE);
+        }
+
+
+//        if ( (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+//             && (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)   ) {
+//
+//            // Should we show an explanation?
+//            if( ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        this.MY_REQUEST_PERMISSION_CODE);
+//
+//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+//        }else{
+//            this.allPermissionOk();
+//        }
     }
 
     /**
@@ -79,46 +141,27 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    /**
-     * Load and set an image depending idxImg (0 to 8)
-     * @param idxImg
-     */
-    private void loadImage( int idxImg ) {
+    private void allPermissionOk(){
+        //Detection
+        this.startDetection();
+    }
 
-        Log.d("MyApp","IMG: --- "+idxImg);
+    private Bitmap[] loadImage( File file ) {
+        Bitmap[] bitmap = new Bitmap[2];
+        try {
+            bitmap[0] = BitmapFactory.decodeStream(new FileInputStream(file));
 
-        switch ( idxImg ) {
-            case 0: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m1_f25_tf25);
-                break;
-            case 1: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m12_f102_ft441);
-                break;
-            case 2: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m1_f86_tf86);
-                break;
-            case 3: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m12_f94_tf433);
-                break;
-            case 4: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m7_f8_tf172);
-                break;
-            case 5: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m7_f9_tf173);
-                break;
-            case 6: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m7_f18_tf182);
-                break;
-            case 7: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m7_f25_tf189);
-                break;
-            case 8: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m9_f8_tf203);
-                break;
-            default: this.imageOriginal = BitmapFactory.decodeResource(this.getResources(), R.mipmap.m9_f35_tf230);
+            //scale img
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
+            int width = displayMetrics.widthPixels;
+            bitmap[1] = Bitmap.createScaledBitmap( bitmap[0], width, height, false );
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        //scale img
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-        this.image = Bitmap.createScaledBitmap(imageOriginal, width, height, false );
-
-        //Set image and repaint
-        this.myCamvas.setImage(image);
-        this.myCamvas.postInvalidate();
+        return bitmap;
     }
 
     /**
@@ -126,44 +169,73 @@ public class MainActivity extends Activity {
      */
     private void startDetection() {
 
+        this.boxDetectedList = new LinkedList<>();
+
         //Thread to set a cycle to load and show different images while
         // neural convolutional network makes inferences detections from the image loaded and showed
         Thread threadMain = new Thread(new Runnable() {
             @Override
             public void run() {
 
-                //index image to load
-                int idxImg = 0;
+                File path = new File(Environment.getExternalStorageDirectory(), MainActivity.this.PATH_IMGS);
+                File[] imgFiles = path.listFiles();
 
-                while(true) {
-                    if (idxImg>9){idxImg = 0;}
+                int i=0;
+                //Get images
+                for (File imgFile : imgFiles){
+
+                    if(i==5) break;
+                    //Get image
+                    Bitmap[] bitmaps = MainActivity.this.loadImage( imgFile );
+                    MainActivity.this.imageOriginal = bitmaps[0];
+                    MainActivity.this.imageToDraw = bitmaps[1];
+
+                    //Set image and repaint
+                    MainActivity.this.myCamvas.setImage(imageToDraw);
+                    MainActivity.this.myCamvas.postInvalidate();
+
+                    //Start SSDMobileNet network
+                    SSDMobileNet ssdMobileNet = new SSDMobileNet(MainActivity.this);
+                    ssdMobileNet.startSSDMobileNet(MainActivity.this.imageOriginal);
+
+                    //wait to SSDMobileNet finished
+                    while (!SSDMobileNet.finishDetection) {}
+
+                    //SSDMobileNet had finished and the boxes detections have been saved so they need to be painted
+                    List<Box> boxes = new LinkedList<Box>( SSDMobileNet.boxes );
+                    SSDMobileNet.cleanDetections();
+
+                    MainActivity.this.drawDetections( boxes );
+                    MainActivity.this.saveDetections( boxes, imgFile.getName(), true );
 
                     try {
-                        //Start SSDMobileNet network
-                        SSDMobileNet ssdMobileNet = new SSDMobileNet(MainActivity.this);
-                        ssdMobileNet.startSSDMobileNet(MainActivity.this.imageOriginal);
-
-                        //wait to SSDMobileNet finished
-                        while (!SSDMobileNet.finishDetection) {}
-                        SSDMobileNet.cleanDetections();
-
-                        //SSDMobileNet had finished and the boxes detections have been saved so they need to be painted
-                        List<Box> boxes = new LinkedList<Box>( SSDMobileNet.boxes );
-
-                        MainActivity.this.drawDetections( boxes );
-                        MainActivity.this.saveDetections(boxes);
-
                         //Wait 5 sec.
-                        sleep(5 * 1000);
-
-                        //Load next image
-                        MainActivity.this.loadImage( idxImg );
-
-                    } catch (Exception e) {
-                        System.out.print(e.toString());
-                    }
-                    idxImg++;
+                        sleep((long) (0.5 * 1000));
+                    }catch (Exception e){}
+                    i++;
                 }
+                JsonDetection jsonDetection = new JsonDetection( MainActivity.this.boxDetectedList );
+                jsonDetection.makeJsonDetections();
+                String jsonDetectionSaved = jsonDetection.toString();
+                try {
+                    String state = Environment.getExternalStorageState();
+                    if( Environment.MEDIA_MOUNTED.equals(state) ) {
+                        File fileJson = new File(Environment.getExternalStorageDirectory() , MainActivity.this.PATH_IMGS+ MainActivity.this.NAME_JSON_BOUNDIG_BOXES);
+                        if (fileJson.exists())
+                            fileJson.delete();
+                        if (!fileJson.exists())
+                            fileJson.createNewFile();
+                        File[] f = fileJson.getParentFile().listFiles();
+                        FileOutputStream fos = new FileOutputStream(fileJson);
+                        OutputStreamWriter out = new OutputStreamWriter( fos );
+                        out.write(jsonDetectionSaved);
+                        out.flush();
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("My app", "Adios");
             }
         });
 
@@ -175,32 +247,31 @@ public class MainActivity extends Activity {
      * Draw all detections saved
      */
     private void drawDetections( List<Box> boxes ){
-        this.myCamvas.setImage(image);
+        this.myCamvas.setImage( this.imageToDraw );
         myCamvas.setBoxes( boxes );
-
-//        for ( int i=0; i<SSDMobileNet.boxHigherConfThanConfidenceThreshold.length; i++ ) {
-//            for ( int idxBox=0; idxBox<SSDMobileNet.boxHigherConfThanConfidenceThreshold[i].length; idxBox++) {
-//                boolean[] boxHigherConfThanConfidenceThresholdData = SSDMobileNet.boxHigherConfThanConfidenceThreshold[i][idxBox];
-//
-//                for (boolean boxHigherConfThanConfidenceThreshold : boxHigherConfThanConfidenceThresholdData) {
-//                    if (boxHigherConfThanConfidenceThreshold) {
-//                        float[] box = SSDMobileNet.boxesToProcessComplete[i][idxBox];
-//                        myCamvas.addBox( box );
-//                    }
-//                }
-//            }
-//        }
         this.myCamvas.postInvalidate();
     }
 
     /**
      * Draw all detections saved
      */
-    private void saveDetections( List<Box> boxes ){
-//        BoxDetected boxDetected = new BoxDetected();
-//        boxDetected.setNameImg( this.);
-//        for ( Box boxe: boxes ) {
-//
-//        }
+    private void saveDetections( List<Box> boxes, String name, boolean isRealScale ){
+        BoxDetected boxDetected = new BoxDetected();
+        boxDetected.setNameImg( name );
+        for( Box box: boxes ) {
+            if( box.getConfidence() > MainActivity.CONFIDENCE ) {
+                if (isRealScale) {
+                    int width = this.imageOriginal.getWidth();
+                    int height = this.imageOriginal.getHeight();
+
+                    boxDetected.addRegion(box.getxMin() * width, box.getyMin() * height, box.getxMax() * width, box.getyMax() * height);
+                } else {
+                    boxDetected.addRegionFromBox(box);
+                }
+            }
+
+        }
+
+        this.boxDetectedList.add( boxDetected );
     }
 }

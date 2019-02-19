@@ -56,6 +56,4 @@ public class Box {
     private float yMax;
     private float confidence;
     private float area;
-
-
 }

@@ -72,7 +72,7 @@ public class MyCanvas extends View {
 
         if(this.boxesList != null) {
             for (Box box : this.boxesList) {
-                if(box.getConfidence()>0.30) {
+                if(box.getConfidence()>MainActivity.CONFIDENCE) {
                     int width = image.getWidth();
                     int height = image.getHeight();
 

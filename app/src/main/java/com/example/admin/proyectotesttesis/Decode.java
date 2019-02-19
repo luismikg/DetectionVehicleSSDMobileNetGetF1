@@ -97,7 +97,7 @@ public class Decode {
                     box.setArea( (box.getxMax() - box.getxMin() +1)*(box.getyMax() - box.getyMin()+1) );
                     this.boxes.add( box );
 
-                    Log.d("MyApp","--- "+idxBox);
+                    //Log.d("MyApp","--- "+idxBox);
                 }
 
                 //Check all classes:
