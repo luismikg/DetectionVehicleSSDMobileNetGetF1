@@ -149,14 +149,16 @@ public class MainActivity extends Activity {
     private Bitmap[] loadImage( File file ) {
         Bitmap[] bitmap = new Bitmap[2];
         try {
-            bitmap[0] = BitmapFactory.decodeStream(new FileInputStream(file));
+            Bitmap originalImg = BitmapFactory.decodeStream(new FileInputStream(file));
 
             //scale img
             DisplayMetrics displayMetrics = new DisplayMetrics();
             this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int height = displayMetrics.heightPixels;
             int width = displayMetrics.widthPixels;
-            bitmap[1] = Bitmap.createScaledBitmap( bitmap[0], width, height, false );
+            Bitmap scaledImg = Bitmap.createScaledBitmap( originalImg, width, height, false );
+            bitmap[0] = originalImg;
+            bitmap[1] = scaledImg;
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -181,37 +183,41 @@ public class MainActivity extends Activity {
                 File[] imgFiles = path.listFiles();
 
                 int i=0;
-                //Get images
-                for (File imgFile : imgFiles){
+                //Get
+                for (File imgFile : imgFiles){ //Prevenir leer el json
 
-//                    if(i==5) break;
-                    //Get image
-                    Bitmap[] bitmaps = MainActivity.this.loadImage( imgFile );
-                    MainActivity.this.imageOriginal = bitmaps[0];
-                    MainActivity.this.imageToDraw = bitmaps[1];
+                    String [] nameList = imgFile.getName().split("\\.");
+                    if( nameList[nameList.length-1].equalsIgnoreCase("PNG")||nameList[nameList.length-1].equalsIgnoreCase("JPG")||
+                            nameList[nameList.length-1].equalsIgnoreCase("JPEG")||nameList[nameList.length-1].equalsIgnoreCase("BMP") ){
+    //                    if(i==5) break;
+                        //Get image
+                        Bitmap[] bitmaps = MainActivity.this.loadImage( imgFile );
+                        MainActivity.this.imageOriginal = bitmaps[0];
+                        MainActivity.this.imageToDraw = bitmaps[1];
 
-                    //Set image and repaint
-                    MainActivity.this.myCamvas.setImage(imageToDraw);
-                    MainActivity.this.myCamvas.postInvalidate();
+                        //Set image and repaint
+                        MainActivity.this.myCamvas.setImage(imageToDraw);
+                        MainActivity.this.myCamvas.postInvalidate();
 
-                    //Start SSDMobileNet network
-                    SSDMobileNet ssdMobileNet = new SSDMobileNet(MainActivity.this);
-                    ssdMobileNet.startSSDMobileNet(MainActivity.this.imageOriginal);
+                        //Start SSDMobileNet network
+                        SSDMobileNet ssdMobileNet = new SSDMobileNet(MainActivity.this);
+                        ssdMobileNet.startSSDMobileNet(MainActivity.this.imageOriginal);
 
-                    //wait to SSDMobileNet finished
-                    while (!SSDMobileNet.finishDetection) {}
+                        //wait to SSDMobileNet finished
+                        while (!SSDMobileNet.finishDetection) {}
 
-                    //SSDMobileNet had finished and the boxes detections have been saved so they need to be painted
-                    List<Box> boxes = new LinkedList<Box>( SSDMobileNet.boxes );
-                    SSDMobileNet.cleanDetections();
+                        //SSDMobileNet had finished and the boxes detections have been saved so they need to be painted
+                        List<Box> boxes = new LinkedList<Box>( SSDMobileNet.boxes );
+                        SSDMobileNet.cleanDetections();
 
-                    MainActivity.this.drawDetections( boxes );
-                    MainActivity.this.saveDetections( boxes, imgFile.getName(), true );
+                        MainActivity.this.drawDetections( boxes );
+                        MainActivity.this.saveDetections( boxes, imgFile.getName(), true );
 
-                    try {
-                        //Wait
-                        sleep((long) (0.5 * 1000));
-                    }catch (Exception e){}
+//                        try {
+//                            //Wait
+//                            sleep((long) (0.5 * 1000));
+//                        }catch (Exception e){}
+                    }
                     i++;
                 }
                 JsonDetection jsonDetection = new JsonDetection( MainActivity.this.boxDetectedList );
