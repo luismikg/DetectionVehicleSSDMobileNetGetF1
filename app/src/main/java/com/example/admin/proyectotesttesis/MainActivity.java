@@ -184,7 +184,7 @@ public class MainActivity extends Activity {
                 //Get images
                 for (File imgFile : imgFiles){
 
-                    if(i==5) break;
+//                    if(i==5) break;
                     //Get image
                     Bitmap[] bitmaps = MainActivity.this.loadImage( imgFile );
                     MainActivity.this.imageOriginal = bitmaps[0];
@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
                     MainActivity.this.saveDetections( boxes, imgFile.getName(), true );
 
                     try {
-                        //Wait 5 sec.
+                        //Wait
                         sleep((long) (0.5 * 1000));
                     }catch (Exception e){}
                     i++;
