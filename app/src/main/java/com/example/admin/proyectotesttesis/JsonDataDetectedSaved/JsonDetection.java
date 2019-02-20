@@ -26,25 +26,29 @@ public class JsonDetection {
 
         for ( BoxDetected boxDetected : this.boxDetectedList ){
             try {
-                JSONObject jsonBox = new JSONObject();
-                jsonBox.put("filename", boxDetected.getNameImg());
+                JSONObject jsonImg = new JSONObject();
+                jsonImg.put("name", boxDetected.getNameImg());
 
-                JSONArray jsonArrRegion = new JSONArray();
+
                 if( boxDetected.hasRegions() ){
+                    JSONObject jsonBoxes = new JSONObject();
+                    int i = 0;
                     for (Region region : boxDetected.getRegions()) {
-                        JSONObject jsonRegion = new JSONObject();
-                        jsonRegion.put("x", region.getX1());
-                        jsonRegion.put("y", region.getY1());
-                        jsonRegion.put("x2", region.getX2());
-                        jsonRegion.put("y2", region.getY2());
-                        jsonRegion.put("width", region.getWidth());
-                        jsonRegion.put("height", region.getHeight());
+                        JSONObject jsonBox = new JSONObject();
+                        jsonBox.put("xmin", region.getX1());
+                        jsonBox.put("ymin", region.getY1());
+                        jsonBox.put("xmax", region.getX2());
+                        jsonBox.put("ymax", region.getY2());
+                        jsonBox.put("width", region.getWidth());
+                        jsonBox.put("height", region.getHeight());
 
-                        jsonArrRegion.put(jsonRegion);
+                        jsonBoxes.put(""+i,jsonBox);
+                        i++;
                     }
+                    jsonImg.put("Boxes", jsonBoxes);
                 }
-                jsonBox.put("regions", jsonArrRegion);
-                this.jsonDetections.put("" + boxDetected.getNameImg(), jsonBox);
+
+                this.jsonDetections.put(boxDetected.getNameImg().split("\\.")[0], jsonImg);
             }catch (Exception e){
                 e.printStackTrace();
             }

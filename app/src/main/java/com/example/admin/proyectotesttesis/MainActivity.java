@@ -189,7 +189,7 @@ public class MainActivity extends Activity {
                     String [] nameList = imgFile.getName().split("\\.");
                     if( nameList[nameList.length-1].equalsIgnoreCase("PNG")||nameList[nameList.length-1].equalsIgnoreCase("JPG")||
                             nameList[nameList.length-1].equalsIgnoreCase("JPEG")||nameList[nameList.length-1].equalsIgnoreCase("BMP") ){
-    //                    if(i==5) break;
+//                        if(i==5) break;
                         //Get image
                         Bitmap[] bitmaps = MainActivity.this.loadImage( imgFile );
                         MainActivity.this.imageOriginal = bitmaps[0];
