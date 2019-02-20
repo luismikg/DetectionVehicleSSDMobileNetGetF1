@@ -41,6 +41,7 @@ public class JsonDetection {
                         jsonBox.put("ymax", region.getY2());
                         jsonBox.put("width", region.getWidth());
                         jsonBox.put("height", region.getHeight());
+                        jsonBox.put("score", region.getScore());
 
                         jsonBoxes.put(""+i,jsonBox);
                         i++;

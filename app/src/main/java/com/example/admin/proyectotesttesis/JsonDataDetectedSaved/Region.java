@@ -9,18 +9,20 @@ public class Region {
     private float y2;
     private float width;
     private float height;
+    private float score;
 
-    public Region( float x1, float y1, float x2, float y2, float width, float height ){
+    public Region( float x1, float y1, float x2, float y2, float width, float height, float score ){
         this.setX1( x1 );
         this.setY1( y1 );
         this.setX2( x2 );
         this.setY2( y2 );
         this.setWidth( width );
         this.setHeight( height );
+        this.setScore( score );
     }
 
-    public Region( float x1, float y1, float x2, float y2 ){
-        this( x1, y1, x2, y2, x2 - x1, y2 - y1 );
+    public Region( float x1, float y1, float x2, float y2, float score ){
+        this( x1, y1, x2, y2, x2 - x1, y2 - y1, score );
     }
 
     public float getX1() {
@@ -69,5 +71,13 @@ public class Region {
 
     public void setHeight(float height) {
         this.height = height;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
     }
 }

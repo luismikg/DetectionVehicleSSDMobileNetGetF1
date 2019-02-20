@@ -270,7 +270,7 @@ public class MainActivity extends Activity {
                     int width = this.imageOriginal.getWidth();
                     int height = this.imageOriginal.getHeight();
 
-                    boxDetected.addRegion(box.getxMin() * width, box.getyMin() * height, box.getxMax() * width, box.getyMax() * height);
+                    boxDetected.addRegion(box.getxMin() * width, box.getyMin() * height, box.getxMax() * width, box.getyMax() * height, box.getConfidence());
                 } else {
                     boxDetected.addRegionFromBox(box);
                 }
